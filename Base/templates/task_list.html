@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Task List
+{% endblock %}
+
+{% block content %}
+
+
+<div class="header-bar">
+
+    <div>
+        <h1>Hello {{request.user | title}}</h1>
+        <h3>You have <em>{{count}}</em> incomplete task{{count |  pluralize:"s"}}</h3>
+    </div>
+
+    {% if request.user.is_authenticated %}
+
+        <form action="{% url 'logout' %}" method="POST">
+            {% csrf_token %}
+            <input type="submit" value="Logout" class="main-button">
+        </form>
+
+    {% else %}
+
+        <a href="{% url 'login' %}">Login</a>
+
+    {% endif %}
+
+</div>
+
+<div class="search-add-wrapper">
+    <form action="" method="GET" class="search-form">
+        <input type="text" name="search-area" value="{{search_input}}">
+        <input type="submit" value="Search" class="main-button">
+    </form>
+    <a class="add-link" href="{% url 'task_create' %}">&#x2b;</a>
+</div>
+
+
+    
+
+<div class="task-items-wrapper">
+
+    {% for task in tasks %}
+
+        <div class="task-wrapper">
+
+            {% if task.complete %}
+
+                <div class="task-title">
+                    
+                    <div class="task-complete-icon"></div>
+
+                    <i>
+                        <s>
+                            <a href="{% url 'task_update' task.id %}">{{task}}</a>
+                        </s>
+                    </i>
+                    
+                </div>
+
+            {% else %}
+
+                <div class="task-title">
+                    
+                    <div class="task-incomplete-icon"></div>
+
+                    <a href="{% url 'task_update' task.id %}">{{task}}</a>      
+                    
+                </div>
+
+            {% endif %}
+            
+            <a class="delete-link" href="{% url 'task_delete' task.id %}">&#215;</a>
+
+        </div>
+
+    {% endfor %}
+    
+</div>
+
+    <!-- <table>
+        <thead>
+            <tr>
+                <th>Task</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for task in tasks %}
+
+                <tr>
+                    <td>{{task.title}}</td>
+                    <td>
+                        <a href="{% url 'task_view' task.id %}">View</a>
+                    </td>
+                    <td>
+                        <a href="{% url 'task_update' task.id %}">Edit</a>
+                    </td>
+                    <td>
+                        <a href="{% url 'task_delete' task.id %}">Delete</a>
+                    </td>
+                </tr>
+
+            {% empty %}
+                <h3>No task to do</h3>
+            {% endfor %}
+        </tbody>
+    </table> -->
+
+{% endblock %}
